@@ -1,6 +1,6 @@
 import "./App.css";
 
-function HeaderTag() {
+function Header() {
   return (
     <header>
       <h1>
@@ -10,7 +10,7 @@ function HeaderTag() {
   );
 }
 
-function NavTag() {
+function Nav() {
   return (
     <nav>
       <ol>
@@ -28,7 +28,7 @@ function NavTag() {
   );
 }
 
-function ArticleTag() {
+function Article() {
   return (
     <article>
       <h2>Welcome!</h2>
@@ -39,9 +39,9 @@ function ArticleTag() {
 function App() {
   return (
     <div className="App">
-      <HeaderTag></HeaderTag>
-      <NavTag></NavTag>
-      <ArticleTag></ArticleTag>
+      <Header />
+      <Nav />
+      <Article />
     </div>
   );
 }
