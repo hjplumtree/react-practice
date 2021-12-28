@@ -1,10 +1,10 @@
 import "./App.css";
 
-function Header() {
+function Header(props) {
   return (
     <header>
       <h1>
-        <a href="index.html">React</a>
+        <a href="index.html">{props.title}</a>
       </h1>
     </header>
   );
@@ -28,20 +28,21 @@ function Nav() {
   );
 }
 
-function Article() {
+function Article(props) {
+  console.log("props", props);
   return (
     <article>
-      <h2>Welcome!</h2>
-      Hello, WEB!
+      <h2>{props.title}</h2>
+      {props.body}
     </article>
   );
 }
 function App() {
   return (
     <div className="App">
-      <Header />
+      <Header title="Web" />
       <Nav />
-      <Article />
+      <Article title="Welcome" body="Hello, React!" />
     </div>
   );
 }
