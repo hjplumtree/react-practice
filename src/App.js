@@ -1,9 +1,29 @@
 import "./App.css";
 
+function App() {
+  let topics = [
+    { id: 1, title: "html", body: "html is ..." },
+    { id: 2, title: "css", body: "css is ..." },
+    { id: 3, title: "js", body: "js is ..." },
+  ];
+
+  function onChangeModeHandler(mode) {
+    alert(mode);
+  }
+
+  return (
+    <div className="App">
+      <Header title="Web" onChangeMode={onChangeModeHandler} />
+      <Nav data={topics} onChangeMode={onChangeModeHandler} />
+      <Article title="Welcome" body="Hello, React!" />
+    </div>
+  );
+}
+
 function Header(props) {
   function onClickHandler(evt) {
     evt.preventDefault();
-    props.onChangeMode();
+    props.onChangeMode(1);
   }
   return (
     <header>
@@ -17,22 +37,20 @@ function Header(props) {
 }
 
 function Nav(props) {
-  let lis = [];
   function onClickHandler(evt) {
     evt.preventDefault();
-    props.onChangeMode();
+    props.onChangeMode("READ");
   }
 
-  for (let i = 0; i < props.data.length; i++) {
-    let d = props.data[i];
-    lis.push(
+  const lis = props.data.map((d) => {
+    return (
       <li key={d.id}>
         <a href={"/read/" + d.id} onClick={onClickHandler}>
           {d.title}
         </a>
-      </li>,
+      </li>
     );
-  }
+  });
 
   return (
     <nav>
@@ -46,27 +64,6 @@ function Article(props) {
       <h2>{props.title}</h2>
       {props.body}
     </article>
-  );
-}
-function App() {
-  let topics = [
-    { id: 1, title: "html", body: "html is ..." },
-    { id: 2, title: "css", body: "css is ..." },
-    { id: 3, title: "js", body: "js is ..." },
-  ];
-
-  function onChangeModeHandler() {
-    alert("change!");
-  }
-  function onChangeNavModeHandler() {
-    alert("changeNav!");
-  }
-  return (
-    <div className="App">
-      <Header title="Web" onChangeMode={onChangeModeHandler} />
-      <Nav data={topics} onChangeMode={onChangeNavModeHandler} />
-      <Article title="Welcome" body="Hello, React!" />
-    </div>
   );
 }
 
