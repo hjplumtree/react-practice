@@ -4,7 +4,7 @@ function Header(props) {
   console.log(props.onChangeMode);
   function onClickHandler(evt) {
     evt.preventDefault();
-    props.onChangeMode();
+    props.onChangeMode("WELCOME");
   }
   return (
     <header>
@@ -20,7 +20,7 @@ function Nav(props) {
   let lis = [];
   function clickHandler(evt) {
     evt.preventDefault();
-    props.onChangeMode();
+    props.onChangeMode("READ");
   }
   for (let i = 0; i < props.data.length; i = i + 1) {
     let d = props.data[i];
@@ -52,16 +52,14 @@ function App() {
     { id: 2, title: "css", body: "css is ..." },
     { id: 3, title: "js", body: "js is ..." },
   ];
-  function onChangeModeHandler() {
-    alert("change!");
+  function ChangeModeHandler(mode) {
+    alert(mode);
   }
-  function onChangeNavModeHandler() {
-    alert("changeNav!");
-  }
+
   return (
     <>
-      <Header title="WEB" onChangeMode={onChangeModeHandler} />
-      <Nav data={topics} onChangeMode={onChangeNavModeHandler} />
+      <Header title="WEB" onChangeMode={ChangeModeHandler} />
+      <Nav data={topics} onChangeMode={ChangeModeHandler} />
       <Article title="Welcome" body="Hello, React!" />
     </>
   );
