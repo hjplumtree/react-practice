@@ -1,7 +1,6 @@
 import "./App.css";
 
 function Header(props) {
-  console.log(props.onChangeMode);
   function onClickHandler(evt) {
     evt.preventDefault();
     props.onChangeMode("WELCOME");
@@ -47,6 +46,7 @@ function Article(props) {
   );
 }
 function App() {
+  let mode = "WELCOME";
   let topics = [
     { id: 1, title: "html", body: "html is ..." },
     { id: 2, title: "css", body: "css is ..." },
@@ -55,12 +55,18 @@ function App() {
   function ChangeModeHandler(mode) {
     alert(mode);
   }
+  let articleTag;
+  if (mode === "WELCOME") {
+    articleTag = <Article title="Welcome" body="Hello, React!" />;
+  } else if (mode === "READ") {
+    articleTag = <Article title="Welcome" body="Hello, READ!" />;
+  }
 
   return (
     <>
       <Header title="WEB" onChangeMode={ChangeModeHandler} />
       <Nav data={topics} onChangeMode={ChangeModeHandler} />
-      <Article title="Welcome" body="Hello, React!" />
+      {articleTag}
     </>
   );
 }
