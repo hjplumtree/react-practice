@@ -16,6 +16,7 @@ function Header(props) {
     </header>
   );
 }
+
 function Nav(props) {
   function clickHandler(evt) {
     evt.preventDefault();
@@ -38,6 +39,7 @@ function Nav(props) {
     </nav>
   );
 }
+
 function Article(props) {
   return (
     <article>
@@ -46,6 +48,7 @@ function Article(props) {
     </article>
   );
 }
+
 function App() {
   const [mode, setMode] = useState("WELCOME");
   const [id, setId] = useState(null);
@@ -76,6 +79,10 @@ function App() {
     articleTag = <Article title={title} body={body} />;
   } else if (mode === "CREATE") {
     articleTag = <Article title="Create" body="Hello, Create" />;
+  } else if (mode === "UPDATE") {
+    articleTag = <Article title="Update" body="Hello, Update" />;
+  } else if (mode === "DELETE") {
+    articleTag = <Article title="Delete" body="Hello, Delete" />;
   }
 
   return (
@@ -94,11 +101,31 @@ function Control(props) {
     props.onChangeMode("CREATE");
   }
 
+  function UpdateHandler(event) {
+    event.preventDefault();
+    props.onChangeMode("UPDATE");
+  }
+
+  function DeleteHandler(event) {
+    event.preventDefault();
+    props.onChangeMode("DELETE");
+  }
+
   return (
     <ul>
       <li>
         <a onClick={ClickHandler} href="/create">
           create
+        </a>
+      </li>
+      <li>
+        <a onClick={UpdateHandler} href="/update">
+          update
+        </a>
+      </li>
+      <li>
+        <a onClick={DeleteHandler} href="/delete">
+          delete
         </a>
       </li>
     </ul>
