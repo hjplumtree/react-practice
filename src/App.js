@@ -74,6 +74,8 @@ function App() {
 
     // const { title, body } = topics.filter((ele) => ele.id == id)[0];
     articleTag = <Article title={title} body={body} />;
+  } else if (mode === "CREATE") {
+    articleTag = <Article title="Create" body="Hello, Create" />;
   }
 
   return (
@@ -81,7 +83,25 @@ function App() {
       <Header title="WEB" onChangeMode={ChangeModeHandler} />
       <Nav data={topics} onChangeMode={ChangeModeHandler} />
       {articleTag}
+      <Control onChangeMode={ChangeModeHandler} />
     </>
+  );
+}
+
+function Control(props) {
+  function ClickHandler(event) {
+    event.preventDefault();
+    props.onChangeMode("CREATE");
+  }
+
+  return (
+    <ul>
+      <li>
+        <a onClick={ClickHandler} href="/create">
+          create
+        </a>
+      </li>
+    </ul>
   );
 }
 
