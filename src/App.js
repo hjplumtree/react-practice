@@ -1,4 +1,5 @@
 import "./App.css";
+import { useState } from "react";
 
 function Header(props) {
   function onClickHandler(evt) {
@@ -46,20 +47,25 @@ function Article(props) {
   );
 }
 function App() {
-  let mode = "WELCOME";
+  // let _mode = useState("WELCOME");
+  // let mode = _mode[0];
+  // let setMode = _mode[1];
+
+  let [mode, setMode] = useState("WELCOME");
+
   let topics = [
     { id: 1, title: "html", body: "html is ..." },
     { id: 2, title: "css", body: "css is ..." },
     { id: 3, title: "js", body: "js is ..." },
   ];
-  function ChangeModeHandler(mode) {
-    alert(mode);
+  function ChangeModeHandler(_mode) {
+    setMode(_mode);
   }
   let articleTag;
   if (mode === "WELCOME") {
     articleTag = <Article title="Welcome" body="Hello, React!" />;
   } else if (mode === "READ") {
-    articleTag = <Article title="Welcome" body="Hello, READ!" />;
+    articleTag = <Article title="Read" body="Hello, READ!" />;
   }
 
   return (
