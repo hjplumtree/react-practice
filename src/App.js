@@ -49,14 +49,39 @@ function Article(props) {
   );
 }
 
+function Create(props) {
+  function submitHandler(evt) {
+    evt.preventDefault();
+    let title = evt.target.title.value;
+    let body = evt.target.body.value;
+    props.onSubmit(title, body);
+  }
+  return (
+    <article>
+      <h2>Create</h2>
+      <form onSubmit={submitHandler}>
+        <p>
+          <input type="text" name="title" placeholder="title" />
+        </p>
+        <p>
+          <textarea name="body" placeholder="body"></textarea>
+        </p>
+        <p>
+          <input type="submit" value="create" />
+        </p>
+      </form>
+    </article>
+  );
+}
+
 function App() {
   const [mode, setMode] = useState("WELCOME");
   const [id, setId] = useState(null);
-  let topics = [
+  const [topics, setTopics] = useState([
     { id: 1, title: "html", body: "html is ..." },
     { id: 2, title: "css", body: "css is ..." },
     { id: 3, title: "js", body: "js is ..." },
-  ];
+  ]);
   function ChangeModeHandler(_mode, _id) {
     setMode(_mode);
     setId(_id);
@@ -78,7 +103,22 @@ function App() {
     // const { title, body } = topics.filter((ele) => ele.id == id)[0];
     articleTag = <Article title={title} body={body} />;
   } else if (mode === "CREATE") {
-    articleTag = <Article title="Create" body="Hello, Create" />;
+    function createSubmitHandler(_title, _body) {
+      const nextId = topics.length + 1;
+      setTopics((current) => {
+        const newTopics = [...current];
+        newTopics.push({
+          id: nextId,
+          title: _title,
+          body: _body,
+        });
+        return newTopics;
+      });
+      setMode("READ");
+      setId(nextId);
+    }
+    console.log(topics);
+    articleTag = <Create onSubmit={createSubmitHandler} />;
   } else if (mode === "UPDATE") {
     articleTag = <Article title="Update" body="Hello, Update" />;
   } else if (mode === "DELETE") {
