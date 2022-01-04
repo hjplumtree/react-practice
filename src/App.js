@@ -74,6 +74,45 @@ function Create(props) {
   );
 }
 
+function Update(props) {
+  const [title, setTitle] = useState(props.title);
+  const [body, setBody] = useState(props.body);
+  function submitHandler(evt) {
+    evt.preventDefault();
+    let title = evt.target.title.value;
+    let body = evt.target.body.value;
+    props.onSubmit(title, body);
+  }
+  console.log(props.title, props.body);
+  return (
+    <article>
+      <h2>Update</h2>
+      <form onSubmit={submitHandler}>
+        <p>
+          <input
+            type="text"
+            name="title"
+            placeholder="title"
+            value={title}
+            onChange={(evt) => setTitle(evt.target.value)}
+          />
+        </p>
+        <p>
+          <textarea
+            name="body"
+            placeholder="body"
+            value={body}
+            onChange={(evt) => setBody(evt.target.value)}
+          ></textarea>
+        </p>
+        <p>
+          <input type="submit" value="update" />
+        </p>
+      </form>
+    </article>
+  );
+}
+
 function App() {
   const [mode, setMode] = useState("WELCOME");
   const [id, setId] = useState(null);
@@ -83,6 +122,18 @@ function App() {
     { id: 3, title: "js", body: "js is ..." },
   ]);
   function ChangeModeHandler(_mode, _id) {
+    if (_mode === "DELETE") {
+      let newTopcis = [];
+      for (let i = 0; i < topics.length; i++) {
+        if (topics[i].id !== id) {
+          newTopcis.push(topics[i]);
+        }
+      }
+      setTopics(newTopcis);
+      setMode("WELCOME");
+      return;
+    }
+
     setMode(_mode);
     setId(_id);
   }
@@ -120,7 +171,31 @@ function App() {
     console.log(topics);
     articleTag = <Create onSubmit={createSubmitHandler} />;
   } else if (mode === "UPDATE") {
-    articleTag = <Article title="Update" body="Hello, Update" />;
+    let title = null;
+    let body = null;
+
+    for (let i = 0; i < topics.length; i++) {
+      if (topics[i].id === id) {
+        title = topics[i].title;
+        body = topics[i].body;
+      }
+    }
+
+    function updateSubmitHandler(_title, _body) {
+      const newTopics = [...topics];
+      for (let i = 0; i < newTopics.length; i++) {
+        if (newTopics[i].id === id) {
+          newTopics[i].title = _title;
+          newTopics[i].body = _body;
+        }
+      }
+      setTopics(newTopics);
+      setMode("READ");
+    }
+
+    articleTag = (
+      <Update title={title} body={body} onSubmit={updateSubmitHandler} />
+    );
   } else if (mode === "DELETE") {
     articleTag = <Article title="Delete" body="Hello, Delete" />;
   }
@@ -130,7 +205,7 @@ function App() {
       <Header title="WEB" onChangeMode={ChangeModeHandler} />
       <Nav data={topics} onChangeMode={ChangeModeHandler} />
       {articleTag}
-      <Control onChangeMode={ChangeModeHandler} />
+      <Control onChangeMode={ChangeModeHandler} selectedId={id} />
     </>
   );
 }
@@ -143,14 +218,32 @@ function Control(props) {
 
   function UpdateHandler(event) {
     event.preventDefault();
-    props.onChangeMode("UPDATE");
+    props.onChangeMode("UPDATE", props.selectedId);
   }
 
-  function DeleteHandler(event) {
-    event.preventDefault();
-    props.onChangeMode("DELETE");
-  }
+  let contextUI = null;
+  if (props.selectedId > 0) {
+    contextUI = (
+      <>
+        <li>
+          <a onClick={UpdateHandler} href={"/update" + props.selectedId}>
+            update
+          </a>
+        </li>
 
+        <li>
+          <form
+            onSubmit={(evt) => {
+              evt.preventDefault();
+              props.onChangeMode("DELETE");
+            }}
+          >
+            <input type="submit" value="delete" />
+          </form>
+        </li>
+      </>
+    );
+  }
   return (
     <ul>
       <li>
@@ -158,16 +251,7 @@ function Control(props) {
           create
         </a>
       </li>
-      <li>
-        <a onClick={UpdateHandler} href="/update">
-          update
-        </a>
-      </li>
-      <li>
-        <a onClick={DeleteHandler} href="/delete">
-          delete
-        </a>
-      </li>
+      {contextUI}
     </ul>
   );
 }
