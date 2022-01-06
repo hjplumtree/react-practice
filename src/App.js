@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import { Link, Routes, Route, useParams } from "react-router-dom";
+import { Link, Routes, Route, useParams, useNavigate } from "react-router-dom";
 
 function Header(props) {
   return (
@@ -65,13 +65,27 @@ function Create(props) {
 }
 
 function Update(props) {
-  const [title, setTitle] = useState(props.title);
-  const [body, setBody] = useState(props.body);
+  const params = useParams();
+  const id = Number(params.id);
+  const topics = props.topics;
+  let _title = null;
+  let _body = null;
+
+  for (let i = 0; i < topics.length; i++) {
+    if (topics[i].id === id) {
+      _title = topics[i].title;
+      _body = topics[i].body;
+    }
+  }
+
+  const [title, setTitle] = useState(_title);
+  const [body, setBody] = useState(_body);
+
   function submitHandler(evt) {
     evt.preventDefault();
     let title = evt.target.title.value;
     let body = evt.target.body.value;
-    props.onSubmit(title, body);
+    props.onSubmit(id, title, body);
   }
   console.log(props.title, props.body);
   return (
@@ -106,6 +120,7 @@ function Update(props) {
 function App() {
   const [mode, setMode] = useState("WELCOME");
   const [id, setId] = useState(null);
+  const navigate = useNavigate();
   const [topics, setTopics] = useState([
     { id: 1, title: "html", body: "html is ..." },
     { id: 2, title: "css", body: "css is ..." },
@@ -152,6 +167,10 @@ function App() {
       }
     }
 
+    articleTag = (
+      <Update title={title} body={body} onSubmit={updateSubmitHandler} />
+    );
+
     function updateSubmitHandler(_title, _body) {
       const newTopics = [...topics];
       for (let i = 0; i < newTopics.length; i++) {
@@ -164,9 +183,6 @@ function App() {
       setMode("READ");
     }
 
-    articleTag = (
-      <Update title={title} body={body} onSubmit={updateSubmitHandler} />
-    );
   } else if (mode === "DELETE") {
     articleTag = <Article title="Delete" body="Hello, Delete" />;
   }
@@ -182,8 +198,57 @@ function App() {
           element={<Article title="Welcome" body="Hello, React!" />}
         ></Route>
         <Route path="/read/:id" element={<Read topics={topics}></Read>}></Route>
+        <Route
+          path="/create"
+          element={
+            <Create
+              onSubmit={(_title, _body) => {
+                const nextId = topics.length + 1;
+                setTopics((current) => {
+                  const newTopics = [...current];
+                  newTopics.push({
+                    id: nextId,
+                    title: _title,
+                    body: _body,
+                  });
+                  return newTopics;
+                });
+                navigate("/read/" + nextId);
+              }}
+            ></Create>
+          }
+        ></Route>
+        <Route
+          path="/update/:id"
+          element={
+            <Update
+              topics={topics}
+              onSubmit={(id, _title, _body) => {
+                const newTopics = [...topics];
+                for (let i = 0; i < newTopics.length; i++) {
+                  if (newTopics[i].id === id) {
+                    newTopics[i].title = _title;
+                    newTopics[i].body = _body;
+                  }
+                }
+                setTopics(newTopics);
+                navigate("/read/" + id);
+              }}
+            ></Update>
+          }
+        ></Route>
       </Routes>
-      <Control onChangeMode={ChangeModeHandler} selectedId={id} />
+
+      <Routes>
+        <Route
+          path="/"
+          element={<Control onChangeMode={ChangeModeHandler} selectedId={id} />}
+        ></Route>
+        <Route
+          path="/read/:id"
+          element={<Control onChangeMode={ChangeModeHandler} selectedId={id} />}
+        ></Route>
+      </Routes>
     </>
   );
 }
@@ -202,8 +267,6 @@ function Read(props) {
     }
   }
 
-  console.log(title, body);
-
   return <Article title={title} body={body} />;
 }
 
@@ -218,14 +281,15 @@ function Control(props) {
     props.onChangeMode("UPDATE", props.selectedId);
   }
 
+  const params = useParams();
+  const selectedId = Number(params.id);
+  console.log(selectedId);
   let contextUI = null;
-  if (props.selectedId > 0) {
+  if (selectedId > 0) {
     contextUI = (
       <>
         <li>
-          <a onClick={UpdateHandler} href={"/update" + props.selectedId}>
-            update
-          </a>
+          <Link to={"/update/" + selectedId}>update</Link>
         </li>
 
         <li>
@@ -244,10 +308,11 @@ function Control(props) {
   return (
     <ul>
       <li>
-        <a onClick={ClickHandler} href="/create">
-          create
-        </a>
+        <Link to="/create">create</Link>
       </li>
+      {/* <li>
+        <Link to="/update">update</Link>
+      </li> */}
       {contextUI}
     </ul>
   );
