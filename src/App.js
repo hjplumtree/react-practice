@@ -1,35 +1,25 @@
 import "./App.css";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Header(props) {
-  function onClickHandler(evt) {
-    evt.preventDefault();
-    props.onChangeMode("WELCOME");
-  }
   return (
     <header>
       <h1>
-        <a href="index.html" onClick={onClickHandler}>
-          {props.title}
-        </a>
+        <Link to="/">{props.title}</Link>
       </h1>
     </header>
   );
 }
 
 function Nav(props) {
-  function clickHandler(evt) {
-    evt.preventDefault();
-    props.onChangeMode("READ", Number(evt.target.dataset.id));
-  }
   let lis = [];
   for (let i = 0; i < props.data.length; i = i + 1) {
     let d = props.data[i];
+
     lis.push(
       <li key={d.id}>
-        <a href={"/read/" + d.id} data-id={d.id} onClick={clickHandler}>
-          {d.title}
-        </a>
+        <Link to={"/read/" + d.id}>{d.title}</Link>
       </li>,
     );
   }
