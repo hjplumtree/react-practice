@@ -123,12 +123,7 @@ function App() {
   ]);
   function ChangeModeHandler(_mode, _id) {
     if (_mode === "DELETE") {
-      let newTopcis = [];
-      for (let i = 0; i < topics.length; i++) {
-        if (topics[i].id !== id) {
-          newTopcis.push(topics[i]);
-        }
-      }
+      let newTopcis = topics.filter((topic) => topic.id !== id);
       setTopics(newTopcis);
       setMode("WELCOME");
       return;
