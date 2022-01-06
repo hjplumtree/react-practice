@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Routes, Route, useParams } from "react-router-dom";
 
 function Header(props) {
   return (
@@ -124,23 +124,7 @@ function App() {
   }
 
   /*
-  let articleTag;
-  if (mode === "WELCOME") {
-    articleTag = <Article title="Welcome" body="Hello, React!" />;
-  } else if (mode === "READ") {
-    let title = null;
-    let body = null;
-
-    for (let i = 0; i < topics.length; i++) {
-      if (topics[i].id === id) {
-        title = topics[i].title;
-        body = topics[i].body;
-      }
-    }
-
-    // const { title, body } = topics.filter((ele) => ele.id == id)[0];
-    articleTag = <Article title={title} body={body} />;
-  } else if (mode === "CREATE") {
+  if (mode === "CREATE") {
     function createSubmitHandler(_title, _body) {
       const nextId = topics.length + 1;
       setTopics((current) => {
@@ -193,12 +177,34 @@ function App() {
       <Header title="WEB" onChangeMode={ChangeModeHandler} />
       <Nav data={topics} onChangeMode={ChangeModeHandler} />
       <Routes>
-        <Route path="/" element={<>Welcome</>}></Route>
-        <Route path="/read/:id" element={<>Read</>}></Route>
+        <Route
+          path="/"
+          element={<Article title="Welcome" body="Hello, React!" />}
+        ></Route>
+        <Route path="/read/:id" element={<Read topics={topics}></Read>}></Route>
       </Routes>
       <Control onChangeMode={ChangeModeHandler} selectedId={id} />
     </>
   );
+}
+
+function Read(props) {
+  const params = useParams();
+  const id = Number(params.id);
+  const topics = props.topics;
+  let title = null;
+  let body = null;
+
+  for (let i = 0; i < topics.length; i++) {
+    if (topics[i].id === id) {
+      title = topics[i].title;
+      body = topics[i].body;
+    }
+  }
+
+  console.log(title, body);
+
+  return <Article title={title} body={body} />;
 }
 
 function Control(props) {
