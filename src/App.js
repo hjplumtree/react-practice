@@ -1,6 +1,6 @@
 import "./App.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Routes, Route } from "react-router-dom";
 
 function Header(props) {
   return (
@@ -122,6 +122,8 @@ function App() {
     setMode(_mode);
     setId(_id);
   }
+
+  /*
   let articleTag;
   if (mode === "WELCOME") {
     articleTag = <Article title="Welcome" body="Hello, React!" />;
@@ -184,12 +186,16 @@ function App() {
   } else if (mode === "DELETE") {
     articleTag = <Article title="Delete" body="Hello, Delete" />;
   }
+*/
 
   return (
     <>
       <Header title="WEB" onChangeMode={ChangeModeHandler} />
       <Nav data={topics} onChangeMode={ChangeModeHandler} />
-      {articleTag}
+      <Routes>
+        <Route path="/" element={<>Welcome</>}></Route>
+        <Route path="/read/:id" element={<>Read</>}></Route>
+      </Routes>
       <Control onChangeMode={ChangeModeHandler} selectedId={id} />
     </>
   );
